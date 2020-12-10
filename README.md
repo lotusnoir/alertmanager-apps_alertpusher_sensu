@@ -1,34 +1,60 @@
-# Ansible Role: ansible-apps_squid_exporter
+# alertpusher-sensu
 
-## Description
+Prometheus alertmanager's default receiver. Implements callback to get prometheus
+alerts from `alertmanager` and pushes the corresponding events to sensu via tcp socket.
 
-[![Build Status](https://travis-ci.com/lotusnoir/ansible-apps_squid_exporter.svg?branch=master)](https://travis-ci.com/lotusnoir/ansible-apps_squid_exporter)[![License](https://img.shields.io/badge/license-MIT%20License-brightgreen.svg)](https://opensource.org/licenses/MIT)[![Ansible Role](https://img.shields.io/badge/ansible%20role-apps__squid_exporter-blue)](https://galaxy.ansible.com/lotusnoir/ansible-apps_squid_exporter/)[![GitHub tag](https://img.shields.io/badge/version-latest-blue)](https://github.com/lotusnoir/ansible-apps_squid_exporter/tags)
+On each `ping` alert, sensu client is also updated with `POST /clients` sensu api. The
+following fields are pushed: ip address, device model, type and vendor, environment.
 
-Deploy [squid_exporter](https://github.com/boynux/squid-exporter) to expose squid metrics to prometheus.
 
-## Role variables
+# compilation
 
-| Name           | Default Value | Description                        |
-| -------------- | ------------- | -----------------------------------|
-| `squid_exporter_version` | 1.9.1 | squid_exporter version |
-| `squid_exporter_squid_host` | localhost | hostname or ip of the squid server |
-| `squid_exporter_squid_port` | 3128 | port of the squid service on the squid server |
-| `squid_exporter_listen_port` | 9103 | port to expose prometheus metrics |
+```
+git clone this repo
+cd alertpusher-sensu
+make
+```
 
-## Examples
+# usage
 
-	---
-	- hosts: apps_squid_exporter
-	  become: yes
-	  become_method: sudo
-	  gather_facts: yes
-	  roles:
-	    - role: ansible-apps_squid_exporter
-	  environment: 
-	    http_proxy: "{{ http_proxy }}"
-	    https_proxy: "{{ https_proxy }}"
-	    no_proxy: "{{ no_proxy }}
+Available command line options:
 
-## License
+```
+./alertpusher-sensu -h
+Usage: alertpusher-sensu [-dh] [-p port] [--sensu-api-port value] [--sensu-client-port value]
+                         [--sensu-host value]
 
-This project is licensed under MIT License. See [LICENSE](/LICENSE) for more details.
+-d, --debug             enable debug mode
+-h, --help              print (this) help message
+-p, --port=port         web server listen port (default: 8086)
+    --sensu-api-port=value
+                        sensu api server port (to update clients) (default: 4567)
+    --sensu-client-port=value
+                        sensu socket server port (to send events) (default: 3030)
+    --sensu-host=value  sensu socket server host (default: "localhost")
+```
+
+# alertmanager
+
+This program can be userd with the following alertmanager config (`/etc/alertmanager.yml`):
+
+```
+global:
+  resolve_timeout: 10m
+
+route:
+  receiver: "default"
+  group_by: ['instance', 'alertname']
+  # params explanation: https://www.robustperception.io/whats-the-difference-between-group_interval-group_wait-and-repeat_interval
+  group_wait:      1m
+  group_interval:  10m
+  repeat_interval: 30m
+
+receivers:
+  - name: "default"
+    webhook_configs:
+    - url: 'http://10.64.32.30:8086/alert'
+      send_resolved: true
+```
+
+The ip/port `10.64.32.30:80086` are the alertpusher-sensu's local listen address and port.

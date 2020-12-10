@@ -1,0 +1,4 @@
+github.com/vma/getopt v1.0.0 h1:qlMC34dIz9JNqw2Fjz20SaEuOfKstWKXqPeACv9wVyE=
+github.com/vma/getopt v1.0.0/go.mod h1:vBIZcCv5rZYPJ/8QzUl5GBxQr41M/LmBunR73bA7V7Q=
+github.com/vma/httplogger v1.0.0 h1:oVSWlenh/00matyooNkRbHd+fRInqE/VU6KQKWgOc/Q=
+github.com/vma/httplogger v1.0.0/go.mod h1:Ne32fArP26rUic3uLoxBnGt9R6fRFuVdlym0hYpXVwA=

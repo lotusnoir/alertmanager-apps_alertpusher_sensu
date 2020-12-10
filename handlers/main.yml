@@ -1,5 +1,0 @@
----
-- name: "restart squid_exporter"
-  service:
-    name: "squid_exporter"
-    state: "restarted"
