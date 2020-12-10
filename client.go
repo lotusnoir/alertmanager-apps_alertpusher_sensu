@@ -15,9 +15,7 @@ type SensuClient struct {
 	Name          string   `json:"name"`
 	Address       string   `json:"address"`
 	Environment   string   `json:"environment"`
-	Category      string   `json:"device_type"`
-	Vendor        string   `json:"device_vendor"`
-	Model         string   `json:"device_model"`
+	Job           string   `json:"job"`
 	Subscriptions []string `json:"subscriptions"`
 	KeepAlives    bool     `json:"keepalives"`
 	Type          string   `json:"type"`
@@ -41,9 +39,7 @@ func NewClientFromAlert(alert PromAlert) *SensuClient {
 		Name:          alert.Labels.Host,
 		Address:       addr,
 		Environment:   alert.Labels.Environment,
-		Category:      alert.Labels.Category,
-		Vendor:        alert.Labels.Vendor,
-		Model:         alert.Labels.Model,
+		Job:           alert.Labels.Job,
 		Subscriptions: []string{"client:" + alert.Labels.Host},
 		KeepAlives:    false,
 		Type:          "proxy",

@@ -24,15 +24,12 @@ type PromAlert struct {
 type Labels struct {
 	AlertName   string `json:"alertname"`
 	Environment string `json:"environment"`
-	Host        string `json:"host_name"`
+	Host        string `json:"instance"`
 	IpAddress   string `json:"ip_address"`
-	Category    string `json:"category"`
-	Vendor      string `json:"vendor"`
-	Model       string `json:"model"`
+	Job         string `json:"job"`
 	Service     string `json:"service"`
 	Severity    string `json:"severity"`
 	Component   string `json:"component"`
-	Instance    string `json:"instance"`
 }
 
 type Annotations struct {
